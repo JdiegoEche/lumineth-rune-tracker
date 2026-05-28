@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumineth Realm-lords — Battle Scripture</title>
+    <meta name="description" content="Tracker interactivo de runas para Lumineth Realm-lords en Age of Sigmar. Planifica y visualiza sinergias de tu Battle Scripture.">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+    <!-- ═══ HEADER ═══ -->
+    <header class="header">
+        <div class="header-glow"></div>
+        <div class="lang-toggle" id="lang-toggle" title="Cambiar idioma / Switch language">
+            <button class="lang-btn active" data-lang="es">ES</button>
+            <button class="lang-btn" data-lang="en">EN</button>
+            <div class="lang-slider"></div>
+        </div>
+        <p class="subtitle">Lumineth Realm-lords</p>
+        <h1 class="title">Battle Scripture</h1>
+        <p class="tagline" id="tagline">Sistema de Runas — Depict Rune Tracker</p>
+    </header>
+
+    <!-- ═══ SCRIPTURE GRID ═══ -->
+    <section class="scripture-section" id="scripture-section">
+        <div class="rounds-row" id="rounds-row">
+            <!-- 5 round diamonds rendered by JS -->
+        </div>
+        <div class="teclis-row" id="teclis-row">
+            <!-- Teclis diamond rendered by JS -->
+        </div>
+        <div class="scripture-hint">
+            <span class="hint-icon">💡</span>
+            Haz clic en un diamante para inscribir una runa
+        </div>
+    </section>
+
+    <!-- ═══ SYNERGY MAP ═══ -->
+    <section class="synergy-section" id="synergy-section">
+        <h2 class="section-title">
+            <span class="section-icon">⚡</span>
+            Mapa de Sinergias
+        </h2>
+        <div class="synergy-matrix" id="synergy-matrix">
+            <!-- Rendered by JS -->
+        </div>
+    </section>
+
+    <!-- ═══ EFFECTS PANEL ═══ -->
+    <section class="effects-section" id="effects-section">
+        <div class="effects-header">
+            <h2 class="section-title">
+                <span class="section-icon">📜</span>
+                Efectos Activos
+            </h2>
+            <div class="effects-stats" id="effects-stats"></div>
+        </div>
+        <div class="effects-grid" id="effects-grid">
+            <!-- Rendered by JS -->
+        </div>
+        <div class="empty-state" id="empty-state">
+            <div class="empty-icon">◇</div>
+            <p>Tu Battle Scripture está vacía</p>
+            <p class="empty-sub">Selecciona una runa en los diamantes de arriba para comenzar</p>
+        </div>
+    </section>
+
+    <!-- ═══ CONTROLS ═══ -->
+    <div class="controls">
+        <button class="btn-reset" id="btn-reset" title="Reiniciar Scripture">
+            <span class="btn-icon">↺</span> Reiniciar Scripture
+        </button>
+    </div>
+</div>
+
+<!-- ═══ RUNE SELECTION MODAL ═══ -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modal-title">Seleccionar Runa</h3>
+            <button class="modal-close" id="modal-close" title="Cerrar">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="rune-options" id="rune-options">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-clear" id="btn-clear">
+                <span class="btn-icon">✕</span> Vaciar Espacio
+            </button>
+            <button class="btn-cancel" id="btn-cancel">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

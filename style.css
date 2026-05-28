@@ -1,0 +1,1171 @@
+/* ═══════════════════════════════════════
+   LUMINETH REALM-LORDS — BATTLE SCRIPTURE
+   Design System & Styles
+   ═══════════════════════════════════════ */
+
+/* ── CSS Custom Properties ── */
+:root {
+    /* Background */
+    --bg-deep: #060a14;
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #111827;
+    --bg-card: rgba(17, 24, 39, 0.7);
+    --bg-card-hover: rgba(25, 34, 56, 0.85);
+    --bg-glass: rgba(15, 20, 35, 0.6);
+
+    /* Text */
+    --text-primary: #f0e6d3;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --text-gold: #d4a843;
+
+    /* Gold palette */
+    --gold: #d4a843;
+    --gold-light: #f0d78c;
+    --gold-dark: #8b6914;
+    --gold-glow: rgba(212, 168, 67, 0.3);
+    --gold-glow-strong: rgba(212, 168, 67, 0.6);
+
+    /* Rune colors */
+    --varinor: #ff6b35;
+    --varinor-light: #ff8f62;
+    --varinor-dark: #cc4400;
+    --varinor-glow: rgba(255, 107, 53, 0.35);
+
+    --alaithi: #daa520;
+    --alaithi-light: #f0c84a;
+    --alaithi-dark: #8b6914;
+    --alaithi-glow: rgba(218, 165, 32, 0.35);
+
+    --ydriliqi: #4fc3f7;
+    --ydriliqi-light: #81d4fa;
+    --ydriliqi-dark: #0288d1;
+    --ydriliqi-glow: rgba(79, 195, 247, 0.35);
+
+    --oreali: #66bb6a;
+    --oreali-light: #81c784;
+    --oreali-dark: #388e3c;
+    --oreali-glow: rgba(102, 187, 106, 0.35);
+
+    --thalari: #ce93d8;
+    --thalari-light: #e1bee7;
+    --thalari-dark: #7b1fa2;
+    --thalari-glow: rgba(206, 147, 216, 0.35);
+
+    /* Spacing & sizing */
+    --diamond-size: 100px;
+    --diamond-size-teclis: 110px;
+    --border-radius: 8px;
+    --border-radius-lg: 16px;
+
+    /* Status */
+    --active: #4ade80;
+    --active-glow: rgba(74, 222, 128, 0.3);
+    --locked: #4b5563;
+    --enhanced: #fbbf24;
+    --enhanced-glow: rgba(251, 191, 36, 0.3);
+}
+
+/* ── Reset & Base ── */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Subtle background pattern */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 0%, rgba(212, 168, 67, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(79, 195, 247, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(206, 147, 216, 0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── App Container ── */
+.app {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+}
+
+/* ═══════════════
+   HEADER
+   ═══════════════ */
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.header-glow {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 120px;
+    background: radial-gradient(ellipse, var(--gold-glow) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.subtitle {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.8rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+}
+
+.title {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 40%, var(--gold-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+    text-shadow: none;
+    filter: drop-shadow(0 0 20px var(--gold-glow));
+}
+
+.tagline {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+}
+
+/* ── Language Toggle ── */
+.lang-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 168, 67, 0.2);
+    border-radius: 20px;
+    padding: 3px;
+    gap: 0;
+    z-index: 10;
+}
+
+.lang-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.75rem;
+    border: none;
+    border-radius: 16px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.lang-btn:hover {
+    color: var(--text-secondary);
+}
+
+.lang-btn.active {
+    color: var(--bg-deep);
+}
+
+.lang-slider {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: calc(50% - 3px);
+    height: calc(100% - 6px);
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    border-radius: 16px;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1;
+}
+
+.lang-toggle.en .lang-slider {
+    transform: translateX(100%);
+}
+
+/* ═══════════════
+   SCRIPTURE GRID
+   ═══════════════ */
+.scripture-section {
+    margin-bottom: 2.5rem;
+}
+
+.rounds-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.8rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.teclis-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Diamond Slot ── */
+.diamond-slot {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.diamond {
+    width: var(--diamond-size);
+    height: var(--diamond-size);
+    transform: rotate(45deg);
+    border: 2px solid rgba(212, 168, 67, 0.25);
+    border-radius: 6px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.diamond::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.diamond-slot:hover .diamond {
+    border-color: var(--gold);
+    box-shadow:
+        0 0 20px var(--gold-glow),
+        inset 0 0 20px rgba(212, 168, 67, 0.05);
+    transform: rotate(45deg) scale(1.05);
+}
+
+/* Empty diamond pulse */
+.diamond.empty {
+    animation: diamondPulse 3s ease-in-out infinite;
+}
+
+@keyframes diamondPulse {
+    0%, 100% { border-color: rgba(212, 168, 67, 0.2); }
+    50% { border-color: rgba(212, 168, 67, 0.4); }
+}
+
+/* Filled diamond */
+.diamond.filled {
+    animation: none;
+}
+
+.diamond.filled[data-rune="varinor"] {
+    border-color: var(--varinor);
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(204, 68, 0, 0.08));
+    box-shadow: 0 0 25px var(--varinor-glow), inset 0 0 15px rgba(255, 107, 53, 0.08);
+}
+
+.diamond.filled[data-rune="alaithi"] {
+    border-color: var(--alaithi);
+    background: linear-gradient(135deg, rgba(218, 165, 32, 0.15), rgba(139, 105, 20, 0.08));
+    box-shadow: 0 0 25px var(--alaithi-glow), inset 0 0 15px rgba(218, 165, 32, 0.08);
+}
+
+.diamond.filled[data-rune="ydriliqi"] {
+    border-color: var(--ydriliqi);
+    background: linear-gradient(135deg, rgba(79, 195, 247, 0.15), rgba(2, 136, 209, 0.08));
+    box-shadow: 0 0 25px var(--ydriliqi-glow), inset 0 0 15px rgba(79, 195, 247, 0.08);
+}
+
+.diamond.filled[data-rune="oreali"] {
+    border-color: var(--oreali);
+    background: linear-gradient(135deg, rgba(102, 187, 106, 0.15), rgba(56, 142, 60, 0.08));
+    box-shadow: 0 0 25px var(--oreali-glow), inset 0 0 15px rgba(102, 187, 106, 0.08);
+}
+
+.diamond.filled[data-rune="thalari"] {
+    border-color: var(--thalari);
+    background: linear-gradient(135deg, rgba(206, 147, 216, 0.15), rgba(123, 31, 162, 0.08));
+    box-shadow: 0 0 25px var(--thalari-glow), inset 0 0 15px rgba(206, 147, 216, 0.08);
+}
+
+/* Diamond inner content */
+.diamond-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-45deg);
+}
+
+.diamond-symbol {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+.diamond-empty-icon {
+    font-size: 1.4rem;
+    color: var(--text-muted);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.diamond-slot:hover .diamond-empty-icon {
+    opacity: 0.8;
+    color: var(--gold);
+}
+
+/* Diamond label */
+.diamond-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-align: center;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+.diamond-slot:hover .diamond-label {
+    color: var(--gold);
+}
+
+.diamond-label.filled {
+    color: var(--text-primary);
+}
+
+.diamond-rune-name {
+    font-size: 0.68rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: -0.5rem;
+    text-align: center;
+    min-height: 1rem;
+}
+
+/* ── Teclis Slot ── */
+.diamond-slot.teclis .diamond {
+    width: var(--diamond-size-teclis);
+    height: var(--diamond-size-teclis);
+    border-color: rgba(212, 168, 67, 0.4);
+}
+
+.diamond-slot.teclis .diamond.empty {
+    animation: teclisPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes teclisPulse {
+    0%, 100% {
+        border-color: rgba(212, 168, 67, 0.3);
+        box-shadow: 0 0 15px rgba(212, 168, 67, 0.1);
+    }
+    50% {
+        border-color: rgba(212, 168, 67, 0.6);
+        box-shadow: 0 0 30px rgba(212, 168, 67, 0.2);
+    }
+}
+
+.diamond-slot.teclis .diamond-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+}
+
+/* Scripture hint */
+.scripture-hint {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.hint-icon {
+    font-size: 0.9rem;
+}
+
+/* ═══════════════
+   SYNERGY MAP
+   ═══════════════ */
+.synergy-section {
+    margin-bottom: 2.5rem;
+}
+
+.section-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.section-icon {
+    font-size: 1rem;
+}
+
+.synergy-matrix {
+    background: var(--bg-card);
+    border: 1px solid rgba(212, 168, 67, 0.12);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    overflow-x: auto;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.synergy-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 3px;
+    font-size: 0.75rem;
+    min-width: 600px;
+}
+
+.synergy-table th {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 0.72rem;
+    padding: 0.6rem 0.5rem;
+    text-align: center;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+}
+
+.synergy-table th.rune-header {
+    min-width: 100px;
+}
+
+.synergy-table td {
+    padding: 0.5rem;
+    text-align: center;
+    border-radius: 4px;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+}
+
+.synergy-table td.row-header {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-align: right;
+    padding-right: 0.8rem;
+    white-space: nowrap;
+}
+
+.synergy-cell {
+    font-size: 0.68rem;
+    line-height: 1.4;
+    border-radius: 6px;
+    padding: 0.5rem;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.synergy-cell.empty-cell {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-muted);
+}
+
+.synergy-cell.diagonal {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.65rem;
+}
+
+.synergy-cell.inactive {
+    background: rgba(75, 85, 99, 0.15);
+    color: var(--text-muted);
+    border: 1px solid rgba(75, 85, 99, 0.2);
+}
+
+.synergy-cell.active {
+    background: rgba(74, 222, 128, 0.1);
+    color: var(--active);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    font-weight: 500;
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.08);
+}
+
+.synergy-cell.no-synergy {
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    opacity: 0.4;
+}
+
+/* ═══════════════
+   EFFECTS PANEL
+   ═══════════════ */
+.effects-section {
+    margin-bottom: 2rem;
+}
+
+.effects-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.effects-stats {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.stat-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.8rem;
+    background: var(--bg-card);
+    border: 1px solid rgba(212, 168, 67, 0.15);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.stat-badge .stat-value {
+    font-weight: 600;
+    color: var(--gold-light);
+}
+
+.stat-badge.capstone-active {
+    border-color: var(--thalari);
+    background: rgba(206, 147, 216, 0.1);
+}
+
+.stat-badge.capstone-active .stat-value {
+    color: var(--thalari-light);
+}
+
+/* Effects grid */
+.effects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+}
+
+/* Rune effect card */
+.rune-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    position: relative;
+    overflow: hidden;
+}
+
+.rune-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.rune-card[data-rune="varinor"] { border-color: rgba(255, 107, 53, 0.2); }
+.rune-card[data-rune="varinor"]::before { background: linear-gradient(90deg, var(--varinor), var(--varinor-light)); }
+
+.rune-card[data-rune="alaithi"] { border-color: rgba(218, 165, 32, 0.2); }
+.rune-card[data-rune="alaithi"]::before { background: linear-gradient(90deg, var(--alaithi), var(--alaithi-light)); }
+
+.rune-card[data-rune="ydriliqi"] { border-color: rgba(79, 195, 247, 0.2); }
+.rune-card[data-rune="ydriliqi"]::before { background: linear-gradient(90deg, var(--ydriliqi), var(--ydriliqi-light)); }
+
+.rune-card[data-rune="oreali"] { border-color: rgba(102, 187, 106, 0.2); }
+.rune-card[data-rune="oreali"]::before { background: linear-gradient(90deg, var(--oreali), var(--oreali-light)); }
+
+.rune-card[data-rune="thalari"] { border-color: rgba(206, 147, 216, 0.2); }
+.rune-card[data-rune="thalari"]::before { background: linear-gradient(90deg, var(--thalari), var(--thalari-light)); }
+
+.rune-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.rune-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.rune-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.rune-card-icon[data-rune="varinor"] { background: rgba(255, 107, 53, 0.15); color: var(--varinor-light); }
+.rune-card-icon[data-rune="alaithi"] { background: rgba(218, 165, 32, 0.15); color: var(--alaithi-light); }
+.rune-card-icon[data-rune="ydriliqi"] { background: rgba(79, 195, 247, 0.15); color: var(--ydriliqi-light); }
+.rune-card-icon[data-rune="oreali"] { background: rgba(102, 187, 106, 0.15); color: var(--oreali-light); }
+.rune-card-icon[data-rune="thalari"] { background: rgba(206, 147, 216, 0.15); color: var(--thalari-light); }
+
+.rune-card-title-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.rune-card-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.3;
+}
+
+.rune-card-subtitle {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.rune-card-instances {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+/* Effect items */
+.effect-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.effect-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    transition: all 0.3s ease;
+}
+
+.effect-item.base {
+    background: rgba(74, 222, 128, 0.06);
+    border-left: 3px solid var(--active);
+    color: var(--text-primary);
+}
+
+.effect-item.enhanced-active {
+    background: rgba(251, 191, 36, 0.06);
+    border-left: 3px solid var(--enhanced);
+    color: var(--text-primary);
+}
+
+.effect-item.enhanced-locked {
+    background: rgba(75, 85, 99, 0.08);
+    border-left: 3px solid var(--locked);
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+.effect-icon {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    width: 1.2rem;
+    text-align: center;
+    margin-top: 0.05rem;
+}
+
+.effect-text {
+    flex: 1;
+}
+
+.effect-requirement {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+    font-style: italic;
+}
+
+.effect-units {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 0.2rem;
+    font-weight: 500;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+}
+
+.empty-state.hidden {
+    display: none;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+    animation: emptyPulse 3s ease-in-out infinite;
+}
+
+@keyframes emptyPulse {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.05); }
+}
+
+.empty-state p {
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+}
+
+.empty-sub {
+    font-size: 0.8rem !important;
+    color: var(--text-muted);
+}
+
+/* ═══════════════
+   CONTROLS
+   ═══════════════ */
+.controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.btn-reset {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.6rem 1.5rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #f87171;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-reset:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn-icon {
+    font-size: 1rem;
+}
+
+/* ═══════════════
+   MODAL
+   ═══════════════ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 1rem;
+}
+
+.modal-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background: var(--bg-secondary);
+    border: 1px solid rgba(212, 168, 67, 0.2);
+    border-radius: var(--border-radius-lg);
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.95) translateY(10px);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-overlay.visible .modal {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(212, 168, 67, 0.1);
+}
+
+.modal-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+}
+
+.modal-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.rune-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+/* Rune option card */
+.rune-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.rune-option:hover {
+    transform: translateX(4px);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.rune-option.selected {
+    border-width: 2px;
+}
+
+.rune-option[data-rune="varinor"]:hover,
+.rune-option[data-rune="varinor"].selected {
+    border-color: var(--varinor);
+    background: rgba(255, 107, 53, 0.08);
+}
+
+.rune-option[data-rune="alaithi"]:hover,
+.rune-option[data-rune="alaithi"].selected {
+    border-color: var(--alaithi);
+    background: rgba(218, 165, 32, 0.08);
+}
+
+.rune-option[data-rune="ydriliqi"]:hover,
+.rune-option[data-rune="ydriliqi"].selected {
+    border-color: var(--ydriliqi);
+    background: rgba(79, 195, 247, 0.08);
+}
+
+.rune-option[data-rune="oreali"]:hover,
+.rune-option[data-rune="oreali"].selected {
+    border-color: var(--oreali);
+    background: rgba(102, 187, 106, 0.08);
+}
+
+.rune-option[data-rune="thalari"]:hover,
+.rune-option[data-rune="thalari"].selected {
+    border-color: var(--thalari);
+    background: rgba(206, 147, 216, 0.08);
+}
+
+.rune-option-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.rune-option-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.rune-option-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.15rem;
+}
+
+.rune-option-subtitle {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+}
+
+.rune-option-desc {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.rune-option-arrow {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.rune-option:hover .rune-option-arrow {
+    color: var(--text-primary);
+    transform: translateX(3px);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(212, 168, 67, 0.1);
+}
+
+.btn-clear,
+.btn-cancel {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-clear {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #f87171;
+}
+
+.btn-clear:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.btn-clear:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+/* ═══════════════
+   TOAST
+   ═══════════════ */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-secondary);
+    border: 1px solid var(--gold-dark);
+    color: var(--text-primary);
+    padding: 0.7rem 1.5rem;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 2000;
+    white-space: nowrap;
+}
+
+.toast.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ═══════════════
+   ANIMATIONS
+   ═══════════════ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.rune-card {
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+.rune-card:nth-child(2) { animation-delay: 0.05s; }
+.rune-card:nth-child(3) { animation-delay: 0.1s; }
+.rune-card:nth-child(4) { animation-delay: 0.15s; }
+.rune-card:nth-child(5) { animation-delay: 0.2s; }
+
+/* ═══════════════
+   RESPONSIVE
+   ═══════════════ */
+@media (max-width: 768px) {
+    .app {
+        padding: 1.5rem 1rem 3rem;
+    }
+
+    :root {
+        --diamond-size: 78px;
+        --diamond-size-teclis: 88px;
+    }
+
+    .rounds-row {
+        gap: 1.2rem;
+    }
+
+    .effects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .synergy-matrix {
+        padding: 1rem;
+    }
+
+    .modal {
+        max-width: 100%;
+    }
+
+    .rune-option {
+        padding: 0.8rem 1rem;
+    }
+
+    .effects-header {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 520px) {
+    :root {
+        --diamond-size: 62px;
+        --diamond-size-teclis: 72px;
+    }
+
+    .rounds-row {
+        gap: 0.8rem;
+    }
+
+    .diamond-symbol {
+        font-size: 1.2rem;
+    }
+
+    .diamond-label {
+        font-size: 0.62rem;
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+}
