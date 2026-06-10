@@ -257,7 +257,7 @@ function init() {
 function renderAll() {
     updateStaticText();
     renderDiamonds();
-    renderSynergyMatrix();
+    renderSynergyMap();
     renderEffects();
 }
 
@@ -398,7 +398,7 @@ function selectRune(runeId) {
 
     closeModal();
     renderDiamonds();
-    renderSynergyMatrix();
+    renderSynergyMap();
     renderEffects();
 
     const rune = RUNES[runeId];
@@ -415,7 +415,7 @@ function clearSlot() {
 
     closeModal();
     renderDiamonds();
-    renderSynergyMatrix();
+    renderSynergyMap();
     renderEffects();
     showToast(t('slotCleared'));
 }
@@ -424,7 +424,7 @@ function resetAll() {
     state.slots = [null, null, null, null, null];
     state.teclis = null;
     renderDiamonds();
-    renderSynergyMatrix();
+    renderSynergyMap();
     renderEffects();
     showToast(t('scriptureReset'));
 }
@@ -603,7 +603,7 @@ function renderEffects() {
 }
 
 // ── Render Synergy Matrix ──
-function renderSynergyMatrix() {
+function renderSynergyMap() {
     const uniqueRunes = getUniqueRunes();
 
     // Build synergy lookup: synergies[row][col] = { textIndex }
@@ -618,6 +618,9 @@ function renderSynergyMatrix() {
     const matrixRunes = ['varinor', 'alaithi', 'ydriliqi', 'oreali'];
 
     let html = `
+        <div class="synergy-title-row">
+            <h2 class="section-title" style="margin-bottom:0">${t('synergyTitle')}</h2>
+        </div>
         <table class="synergy-table">
         <thead><tr><th></th>`;
 
@@ -625,7 +628,7 @@ function renderSynergyMatrix() {
         const rune = RUNES[colId];
         const isActive = uniqueRunes.has(colId);
         const style = isActive ? `color: ${rune.color}; opacity: 1;` : 'opacity: 0.5;';
-        html += `<th class="rune-header" style="${style}">${rune.symbol} ${rune.name}</th>`;
+        html += `<th class="rune-header" style="${style}">${rune.name}</th>`;
     });
 
     html += `</tr></thead><tbody>`;
@@ -635,7 +638,7 @@ function renderSynergyMatrix() {
         const rowActive = uniqueRunes.has(rowId);
         const rowStyle = rowActive ? `color: ${rowRune.color}; opacity: 1;` : 'opacity: 0.5;';
 
-        html += `<tr><td class="row-header" style="${rowStyle}">${rowRune.symbol} ${rowRune.name}</td>`;
+        html += `<tr><td class="row-header" style="${rowStyle}">${rowRune.name}</td>`;
 
         matrixRunes.forEach(colId => {
             if (rowId === colId) {
