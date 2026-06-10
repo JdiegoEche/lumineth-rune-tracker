@@ -66,6 +66,8 @@
     --enhanced-glow: rgba(251, 191, 36, 0.3);
 }
 
+.hidden { display: none !important; }
+
 /* ── Reset & Base ── */
 *,
 *::before,
@@ -481,6 +483,22 @@ body::before {
 
 .synergy-table th.rune-header {
     min-width: 100px;
+    transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.synergy-table th.rune-header.active[data-rune="varinor"],
+.synergy-table td.row-header.active[data-rune="varinor"] { color: var(--varinor); }
+.synergy-table th.rune-header.active[data-rune="alaithi"],
+.synergy-table td.row-header.active[data-rune="alaithi"] { color: var(--alaithi); }
+.synergy-table th.rune-header.active[data-rune="ydriliqi"],
+.synergy-table td.row-header.active[data-rune="ydriliqi"] { color: var(--ydriliqi); }
+.synergy-table th.rune-header.active[data-rune="oreali"],
+.synergy-table td.row-header.active[data-rune="oreali"] { color: var(--oreali); }
+
+.synergy-table th.rune-header.inactive,
+.synergy-table td.row-header.inactive {
+    color: var(--text-muted);
+    opacity: 0.5;
 }
 
 .synergy-table td {
@@ -510,6 +528,7 @@ body::before {
     align-items: center;
     justify-content: center;
     text-align: center;
+    transition: background 0.35s ease, border-color 0.35s ease, color 0.35s ease;
 }
 
 .synergy-cell.empty-cell {
@@ -735,6 +754,25 @@ body::before {
 .effect-text {
     flex: 1;
 }
+
+.inscribed-runes-bar {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid rgba(212, 168, 67, 0.1);
+}
+
+.inscribed-rune {
+    font-weight: 600;
+}
+.inscribed-rune[data-rune="varinor"] { color: var(--varinor-light); }
+.inscribed-rune[data-rune="alaithi"] { color: var(--alaithi-light); }
+.inscribed-rune[data-rune="ydriliqi"] { color: var(--ydriliqi-light); }
+.inscribed-rune[data-rune="oreali"] { color: var(--oreali-light); }
+.inscribed-rune[data-rune="thalari"] { color: var(--thalari-light); }
 
 .effect-requirement {
     font-size: 0.68rem;
