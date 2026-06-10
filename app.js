@@ -28,7 +28,6 @@ const LANG = {
         inscribed: 'inscrita en la scripture',
         slotCleared: 'Espacio vaciado',
         scriptureReset: 'Scripture reiniciada',
-        lastRuneLabel: 'última runa inscrita',
         emptyTitle: 'Tu Battle Scripture está vacía',
         emptySub: 'Selecciona una runa en los diamantes de arriba para comenzar',
         runeSubtitles: {
@@ -93,7 +92,6 @@ const LANG = {
         inscribed: 'inscribed on the scripture',
         slotCleared: 'Slot cleared',
         scriptureReset: 'Scripture reset',
-        lastRuneLabel: 'last rune inscribed',
         emptyTitle: 'Your Battle Scripture is empty',
         emptySub: 'Select a rune in the diamonds above to begin',
         runeSubtitles: {
@@ -207,8 +205,7 @@ let state = {
     slots: [null, null, null, null, null],
     teclis: null,
     selectedSlotIndex: null,
-    lang: 'es',
-    activeRuneId: null
+    lang: 'es'
 };
 
 // ── Translation helper ──
@@ -267,7 +264,8 @@ function renderAll() {
 function updateStaticText() {
     tagline.textContent = t('tagline');
     document.querySelector('.scripture-hint').innerHTML = t('hint');
-    document.querySelector('.section-title:has(.section-icon)') // synergy title handled in render
+    document.querySelector('#synergy-section .section-title').innerHTML = `<span class="section-icon">⚡</span> ${t('synergyTitle')}`;
+    document.querySelector('#effects-section .section-title').innerHTML = `<span class="section-icon">📜</span> ${t('effectsTitle')}`;
     document.getElementById('btn-reset').innerHTML = `<span class="btn-icon">↺</span> ${t('resetScripture')}`;
     document.getElementById('btn-clear').innerHTML = `<span class="btn-icon">✕</span> ${t('clearSlot')}`;
     document.getElementById('btn-cancel').textContent = t('cancel');
@@ -401,7 +399,6 @@ function selectRune(runeId) {
     closeModal();
     renderDiamonds();
     renderSynergyMatrix();
-    state.activeRuneId = runeId;
     renderEffects();
 
     const rune = RUNES[runeId];
@@ -419,7 +416,6 @@ function clearSlot() {
     closeModal();
     renderDiamonds();
     renderSynergyMatrix();
-    state.activeRuneId = null;
     renderEffects();
     showToast(t('slotCleared'));
 }
@@ -427,7 +423,6 @@ function clearSlot() {
 function resetAll() {
     state.slots = [null, null, null, null, null];
     state.teclis = null;
-    state.activeRuneId = null;
     renderDiamonds();
     renderSynergyMatrix();
     renderEffects();
@@ -462,7 +457,6 @@ function calculateEffects() {
         const runeEffects = {
             rune: rune,
             instances: count,
-            totalUnits: rune.perInstance ? rune.unitsPerInstance : null,
             enhancedEffects: rune.enhanced.map(ee => ({
                 ...ee,
                 active: uniqueRunes.has(ee.requiredRune)
@@ -536,7 +530,7 @@ function renderEffects() {
     }
 
     effectsGrid.innerHTML = headerHTML;
-    effects.forEach(({ rune, instances, totalUnits, enhancedEffects, conditionalEffects }) => {
+    effects.forEach(({ rune, instances, enhancedEffects, conditionalEffects }) => {
         const card = document.createElement('div');
         card.className = 'rune-card';
         card.dataset.rune = rune.id;
@@ -624,9 +618,6 @@ function renderSynergyMatrix() {
     const matrixRunes = ['varinor', 'alaithi', 'ydriliqi', 'oreali'];
 
     let html = `
-        <div class="synergy-title-row">
-            <h2 class="section-title" style="margin-bottom:0">${t('synergyTitle')}</h2>
-        </div>
         <table class="synergy-table">
         <thead><tr><th></th>`;
 
