@@ -199,6 +199,7 @@ const RUNES = {
 };
 
 const RUNE_IDS = ['varinor', 'alaithi', 'ydriliqi', 'oreali', 'thalari'];
+const CARD_ORDER = ['varinor', 'alaithi', 'ydriliqi', 'oreali', 'thalari'];
 
 // ── State ──
 let state = {
@@ -256,18 +257,22 @@ function init() {
 
 function renderAll() {
     updateStaticText();
+    const depictedRunes = getDepictedRunes();
+    const uniqueRunes = getUniqueRunes();
+    const hint = document.querySelector('.scripture-hint');
+    hint.classList.toggle('hidden', depictedRunes.length > 0);
     renderDiamonds();
-    renderSynergyMap();
-    renderEffects();
+    renderSynergyMap(uniqueRunes);
+    renderEffects(depictedRunes, uniqueRunes);
 }
 
 function updateStaticText() {
     tagline.textContent = t('tagline');
-    document.querySelector('.scripture-hint').innerHTML = t('hint');
-    document.querySelector('#synergy-section .section-title').innerHTML = `<span class="section-icon">⚡</span> ${t('synergyTitle')}`;
-    document.querySelector('#effects-section .section-title').innerHTML = `<span class="section-icon">📜</span> ${t('effectsTitle')}`;
-    document.getElementById('btn-reset').innerHTML = `<span class="btn-icon">↺</span> ${t('resetScripture')}`;
-    document.getElementById('btn-clear').innerHTML = `<span class="btn-icon">✕</span> ${t('clearSlot')}`;
+    document.querySelector('.hint-text').textContent = t('hint');
+    document.querySelector('#synergy-section .section-text').textContent = t('synergyTitle');
+    document.querySelector('#effects-section .section-text').textContent = t('effectsTitle');
+    document.querySelector('#btn-reset .btn-label').textContent = t('resetScripture');
+    document.querySelector('#btn-clear .btn-label').textContent = t('clearSlot');
     document.getElementById('btn-cancel').textContent = t('cancel');
 }
 
@@ -352,39 +357,40 @@ function openModal(slotIndex) {
 
     modalTitle.textContent = `${t('selectRune')} — ${slotLabel}`;
     btnClear.disabled = !currentRune;
-    btnClear.innerHTML = `<span class="btn-icon">✕</span> ${t('clearSlot')}`;
+    btnClear.querySelector('.btn-label').textContent = t('clearSlot');
     btnCancel.textContent = t('cancel');
 
     runeOptions.innerHTML = '';
+    const optTemplate = document.getElementById('rune-option-template');
     RUNE_IDS.forEach(runeId => {
         const rune = RUNES[runeId];
         const isSelected = currentRune === runeId;
 
-        const option = document.createElement('div');
-        option.className = `rune-option${isSelected ? ' selected' : ''}`;
+        const clone = optTemplate.content.cloneNode(true);
+        const option = clone.querySelector('.rune-option');
         option.dataset.rune = runeId;
+        if (isSelected) option.classList.add('selected');
         option.addEventListener('click', () => selectRune(runeId));
 
-        option.innerHTML = `
-            <div class="rune-option-icon rune-card-icon" data-rune="${runeId}">${rune.symbol}</div>
-            <div class="rune-option-info">
-                <div class="rune-option-name">${rune.name}</div>
-                <div class="rune-option-subtitle">${tSub(runeId)}</div>
-                <div class="rune-option-desc">${tBase(runeId)}</div>
-            </div>
-            <div class="rune-option-arrow">→</div>
-        `;
+        clone.querySelector('.rune-option-icon').textContent = rune.symbol;
+        clone.querySelector('.rune-option-icon').dataset.rune = runeId;
+        clone.querySelector('.rune-option-name').textContent = rune.name;
+        clone.querySelector('.rune-option-subtitle').textContent = tSub(runeId);
+        clone.querySelector('.rune-option-desc').textContent = tBase(runeId);
 
-        runeOptions.appendChild(option);
+        runeOptions.appendChild(clone);
     });
 
     modalOverlay.classList.add('visible');
+    const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.paddingRight = scrollBarWidth + 'px';
     document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
     modalOverlay.classList.remove('visible');
     document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
     state.selectedSlotIndex = null;
 }
 
@@ -397,9 +403,7 @@ function selectRune(runeId) {
     }
 
     closeModal();
-    renderDiamonds();
-    renderSynergyMap();
-    renderEffects();
+    renderAll();
 
     const rune = RUNES[runeId];
     showToast(`${rune.symbol} ${rune.name} ${t('inscribed')}`);
@@ -414,18 +418,14 @@ function clearSlot() {
     }
 
     closeModal();
-    renderDiamonds();
-    renderSynergyMap();
-    renderEffects();
+    renderAll();
     showToast(t('slotCleared'));
 }
 
 function resetAll() {
     state.slots = [null, null, null, null, null];
     state.teclis = null;
-    renderDiamonds();
-    renderSynergyMap();
-    renderEffects();
+    renderAll();
     showToast(t('scriptureReset'));
 }
 
@@ -438,18 +438,12 @@ function getUniqueRunes() {
     return new Set(getDepictedRunes());
 }
 
-function getRuneInstances() {
+// ── Calculate & Render Effects ──
+function calculateEffects(depictedRunes, uniqueRunes) {
     const instances = {};
-    getDepictedRunes().forEach(id => {
+    depictedRunes.forEach(id => {
         instances[id] = (instances[id] || 0) + 1;
     });
-    return instances;
-}
-
-// ── Calculate & Render Effects ──
-function calculateEffects() {
-    const instances = getRuneInstances();
-    const uniqueRunes = getUniqueRunes();
     const effects = [];
 
     for (const [runeId, count] of Object.entries(instances)) {
@@ -472,36 +466,34 @@ function calculateEffects() {
     return {
         effects,
         uniqueCount: uniqueRunes.size,
-        totalRunes: getDepictedRunes().length
+        totalRunes: depictedRunes.length
     };
 }
 
-function renderEffects() {
-    const { effects, uniqueCount, totalRunes } = calculateEffects();
-    const uniqueRunes = getUniqueRunes();
+function renderEffects(depictedRunes, uniqueRunes) {
+    const { effects, uniqueCount, totalRunes } = calculateEffects(depictedRunes, uniqueRunes);
 
     // Stats badges (always show)
-    let statsHTML = `
-        <div class="stat-badge">
-            <span>${t('uniqueRunes')}:</span>
-            <span class="stat-value">${uniqueCount}/5</span>
-        </div>
-        <div class="stat-badge">
-            <span>${t('totalInscribed')}:</span>
-            <span class="stat-value">${totalRunes}/6</span>
-        </div>
-    `;
+    const badgeTemplate = document.getElementById('stat-badge-template');
+    effectsStats.innerHTML = '';
+
+    const uniqueBadge = badgeTemplate.content.cloneNode(true);
+    uniqueBadge.querySelector('.stat-label').textContent = t('uniqueRunes') + ':';
+    uniqueBadge.querySelector('.stat-value').textContent = uniqueCount + '/5';
+    effectsStats.appendChild(uniqueBadge);
+
+    const totalBadge = badgeTemplate.content.cloneNode(true);
+    totalBadge.querySelector('.stat-label').textContent = t('totalInscribed') + ':';
+    totalBadge.querySelector('.stat-value').textContent = totalRunes + '/6';
+    effectsStats.appendChild(totalBadge);
 
     if (uniqueCount >= 4 && uniqueRunes.has('thalari')) {
-        statsHTML += `
-            <div class="stat-badge capstone-active">
-                <span>${t('zenithActive')}:</span>
-                <span class="stat-value">${t('critsOn5')}</span>
-            </div>
-        `;
+        const capstoneBadge = badgeTemplate.content.cloneNode(true);
+        capstoneBadge.querySelector('.stat-badge').classList.add('capstone-active');
+        capstoneBadge.querySelector('.stat-label').textContent = t('zenithActive') + ':';
+        capstoneBadge.querySelector('.stat-value').textContent = t('critsOn5');
+        effectsStats.appendChild(capstoneBadge);
     }
-
-    effectsStats.innerHTML = statsHTML;
 
     // Empty state
     if (effects.length === 0) {
@@ -514,99 +506,88 @@ function renderEffects() {
 
     emptyState.classList.add('hidden');
 
-    // Sort cards in canonical order
-    const order = ['varinor', 'alaithi', 'ydriliqi', 'oreali', 'thalari'];
-    effects.sort((a, b) => order.indexOf(a.rune.id) - order.indexOf(b.rune.id));
+    effects.sort((a, b) => CARD_ORDER.indexOf(a.rune.id) - CARD_ORDER.indexOf(b.rune.id));
 
     // Inscribed runes line
-    const depicted = getDepictedRunes();
-    let headerHTML = '';
+    const depicted = depictedRunes;
+    effectsGrid.innerHTML = '';
     if (depicted.length > 0) {
-        const runeLine = depicted.map(id => {
+        const barClone = document.getElementById('inscribed-runes-bar').content.cloneNode(true);
+        const list = barClone.querySelector('.inscribed-runes-list');
+        depicted.forEach((id, i) => {
             const r = RUNES[id];
-            return `<span style="color:${r.color};font-weight:600">${r.symbol} ${r.name}</span>`;
-        }).join(' · ');
-        headerHTML = `<div style="font-size:0.8rem;color:var(--text-secondary);padding:0.5rem 0.75rem;margin-bottom:0.75rem;background:var(--bg-card);border-radius:8px;border:1px solid rgba(212,168,67,0.1)">${runeLine}</div>`;
+            const span = document.createElement('span');
+            span.className = 'inscribed-rune';
+            span.dataset.rune = r.id;
+            span.textContent = r.symbol + ' ' + r.name;
+            list.appendChild(span);
+            if (i < depicted.length - 1) {
+                list.appendChild(document.createTextNode(' · '));
+            }
+        });
+        effectsGrid.appendChild(barClone);
     }
+    const cardTemplate = document.getElementById('rune-card-template');
+    const effectItemTemplate = document.getElementById('effect-item-template');
 
-    effectsGrid.innerHTML = headerHTML;
     effects.forEach(({ rune, instances, enhancedEffects, conditionalEffects }) => {
-        const card = document.createElement('div');
-        card.className = 'rune-card';
+        const cardClone = cardTemplate.content.cloneNode(true);
+        const card = cardClone.querySelector('.rune-card');
         card.dataset.rune = rune.id;
 
-        const unitsInfo = rune.perInstance
-            ? `<div class="effect-units">▸ ${t('targets')} 2 ${t('units')}</div>`
-            : '';
+        cardClone.querySelector('.rune-card-icon').textContent = rune.symbol;
+        cardClone.querySelector('.rune-card-icon').dataset.rune = rune.id;
+        cardClone.querySelector('.rune-card-name').textContent = rune.name;
+        cardClone.querySelector('.rune-card-subtitle').textContent = tSub(rune.id);
+        cardClone.querySelector('.effect-item.base .effect-text').textContent = tBase(rune.id);
 
-        let enhancedHTML = '';
-        enhancedEffects.forEach(ee => {
-            const isActive = ee.active;
-            const statusClass = isActive ? 'enhanced-active' : 'enhanced-locked';
-            const icon = isActive ? '⚡' : '🔒';
+        if (rune.perInstance) {
+            const unitsEl = document.createElement('div');
+            unitsEl.className = 'effect-units';
+            unitsEl.textContent = `▸ ${t('targets')} 2 ${t('units')}`;
+            cardClone.querySelector('.effect-item.base .effect-text').appendChild(unitsEl);
+        }
 
-            const reqRune = RUNES[ee.requiredRune];
-            const requirement = isActive
-                ? `<div class="effect-requirement">✓ ${t('synergyWith')} ${reqRune.name}</div>`
-                : `<div class="effect-requirement">${t('requires')} ${reqRune.name} (${tSub(ee.requiredRune)})</div>`;
+        const effectList = cardClone.querySelector('.effect-list');
 
-            enhancedHTML += `
-                <div class="effect-item ${statusClass}">
-                    <span class="effect-icon">${icon}</span>
-                    <div class="effect-text">
-                        ${tEnhanced(rune.id, ee.textIndex)}
-                        ${requirement}
-                    </div>
-                </div>
-            `;
-        });
-
-        let conditionalHTML = '';
         conditionalEffects.forEach(ce => {
             const isActive = ce.active;
-            const statusClass = isActive ? 'enhanced-active' : 'enhanced-locked';
-            const icon = isActive ? '★' : '☆';
-
-            conditionalHTML += `
-                <div class="effect-item ${statusClass}">
-                    <span class="effect-icon">${icon}</span>
-                    <div class="effect-text">
-                        ${tConditional(rune.id, ce.textIndex)}
-                    </div>
-                </div>
-            `;
+            const itemClone = effectItemTemplate.content.cloneNode(true);
+            const item = itemClone.querySelector('.effect-item');
+            item.classList.add(isActive ? 'enhanced-active' : 'enhanced-locked');
+            itemClone.querySelector('.effect-icon').textContent = isActive ? '★' : '☆';
+            itemClone.querySelector('.effect-text').textContent = tConditional(rune.id, ce.textIndex);
+            effectList.appendChild(itemClone);
         });
 
-        card.innerHTML = `
-            <div class="rune-card-header">
-                <div class="rune-card-icon" data-rune="${rune.id}">${rune.symbol}</div>
-                <div class="rune-card-title-group">
-                    <div class="rune-card-name">${rune.name}</div>
-                    <div class="rune-card-subtitle">${tSub(rune.id)}</div>
-                </div>
-            </div>
-            <div class="effect-list">
-                <div class="effect-item base">
-                    <span class="effect-icon">✦</span>
-                    <div class="effect-text">
-                        ${tBase(rune.id)}
-                        ${unitsInfo}
-                    </div>
-                </div>
-                ${conditionalHTML}
-                ${enhancedHTML}
-            </div>
-        `;
+        enhancedEffects.forEach(ee => {
+            const isActive = ee.active;
+            const itemClone = effectItemTemplate.content.cloneNode(true);
+            const item = itemClone.querySelector('.effect-item');
+            item.classList.add(isActive ? 'enhanced-active' : 'enhanced-locked');
+            itemClone.querySelector('.effect-icon').textContent = isActive ? '⚡' : '🔒';
 
-        effectsGrid.appendChild(card);
+            const reqRune = RUNES[ee.requiredRune];
+            const effectText = itemClone.querySelector('.effect-text');
+            effectText.textContent = tEnhanced(rune.id, ee.textIndex);
+
+            const reqEl = document.createElement('div');
+            reqEl.className = 'effect-requirement';
+            reqEl.textContent = isActive
+                ? `✓ ${t('synergyWith')} ${reqRune.name}`
+                : `${t('requires')} ${reqRune.name} (${tSub(ee.requiredRune)})`;
+            effectText.appendChild(reqEl);
+            effectList.appendChild(itemClone);
+        });
+
+        effectsGrid.appendChild(cardClone);
     });
 }
 
 // ── Render Synergy Matrix ──
-function renderSynergyMap() {
-    const uniqueRunes = getUniqueRunes();
+function renderSynergyMap(uniqueRunes) {
 
-    // Build synergy lookup: synergies[row][col] = { textIndex }
+    // Build synergy lookup: synergies[row][col] = textIndex
     const synergies = {};
     RUNE_IDS.forEach(runeId => {
         synergies[runeId] = {};
@@ -615,52 +596,44 @@ function renderSynergyMap() {
         });
     });
 
-    const matrixRunes = ['varinor', 'alaithi', 'ydriliqi', 'oreali'];
+    const tableClone = document.getElementById('synergy-table-template').content.cloneNode(true);
 
-    let html = `
-        <div class="synergy-title-row">
-            <h2 class="section-title" style="margin-bottom:0">${t('synergyTitle')}</h2>
-        </div>
-        <table class="synergy-table">
-        <thead><tr><th></th>`;
-
-    matrixRunes.forEach(colId => {
+    // Update header cells
+    tableClone.querySelectorAll('thead th[data-col]').forEach(th => {
+        const colId = th.dataset.col;
         const rune = RUNES[colId];
         const isActive = uniqueRunes.has(colId);
-        const style = isActive ? `color: ${rune.color}; opacity: 1;` : 'opacity: 0.5;';
-        html += `<th class="rune-header" style="${style}">${rune.name}</th>`;
+        th.className = 'rune-header ' + (isActive ? 'active' : 'inactive');
+        th.textContent = rune.name;
     });
 
-    html += `</tr></thead><tbody>`;
-
-    matrixRunes.forEach(rowId => {
+    // Update row headers and data cells
+    tableClone.querySelectorAll('tbody tr[data-row]').forEach(tr => {
+        const rowId = tr.dataset.row;
         const rowRune = RUNES[rowId];
         const rowActive = uniqueRunes.has(rowId);
-        const rowStyle = rowActive ? `color: ${rowRune.color}; opacity: 1;` : 'opacity: 0.5;';
 
-        html += `<tr><td class="row-header" style="${rowStyle}">${rowRune.name}</td>`;
+        const rowHeader = tr.querySelector('.row-header');
+        rowHeader.className = 'row-header ' + (rowActive ? 'active' : 'inactive');
+        rowHeader.textContent = rowRune.name;
 
-        matrixRunes.forEach(colId => {
-            if (rowId === colId) {
-                html += `<td><div class="synergy-cell diagonal">—</div></td>`;
+        tr.querySelectorAll('.synergy-cell[data-cell]').forEach(cell => {
+            const parts = cell.dataset.cell.split('_');
+            const rId = parts[0], cId = parts[1];
+            const textIndex = synergies[rId]?.[cId];
+            if (textIndex !== undefined) {
+                const cellActive = uniqueRunes.has(rId) && uniqueRunes.has(cId);
+                cell.className = 'synergy-cell ' + (cellActive ? 'active' : 'inactive');
+                cell.textContent = tEnhanced(rId, textIndex);
             } else {
-                const textIndex = synergies[rowId]?.[colId];
-                if (textIndex !== undefined) {
-                    const isActive = uniqueRunes.has(rowId) && uniqueRunes.has(colId);
-                    const cellClass = isActive ? 'active' : 'inactive';
-                    const text = tEnhanced(rowId, textIndex);
-                    html += `<td><div class="synergy-cell ${cellClass}">${text}</div></td>`;
-                } else {
-                    html += `<td><div class="synergy-cell no-synergy">—</div></td>`;
-                }
+                cell.className = 'synergy-cell no-synergy';
+                cell.textContent = '—';
             }
         });
-
-        html += `</tr>`;
     });
 
-    html += `</tbody></table>`;
-    synergyMatrix.innerHTML = html;
+    synergyMatrix.innerHTML = '';
+    synergyMatrix.appendChild(tableClone);
 }
 
 // ── Toast ──
