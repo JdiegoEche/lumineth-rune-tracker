@@ -34,7 +34,7 @@
         </div>
         <div class="scripture-hint">
             <span class="hint-icon">💡</span>
-            Haz clic en un diamante para inscribir una runa
+            <span class="hint-text">Haz clic en un diamante para inscribir una runa</span>
         </div>
     </section>
 
@@ -42,7 +42,7 @@
     <section class="synergy-section" id="synergy-section">
         <h2 class="section-title">
             <span class="section-icon">⚡</span>
-            Mapa de Sinergias
+            <span class="section-text">Mapa de Sinergias</span>
         </h2>
         <div class="synergy-matrix" id="synergy-matrix">
             <!-- Rendered by JS -->
@@ -54,7 +54,7 @@
         <div class="effects-header">
             <h2 class="section-title">
                 <span class="section-icon">📜</span>
-                Efectos Activos
+                <span class="section-text">Efectos Activos</span>
             </h2>
             <div class="effects-stats" id="effects-stats"></div>
         </div>
@@ -71,7 +71,8 @@
     <!-- ═══ CONTROLS ═══ -->
     <div class="controls">
         <button class="btn-reset" id="btn-reset" title="Reiniciar Scripture">
-            <span class="btn-icon">↺</span> Reiniciar Scripture
+            <span class="btn-icon">↺</span>
+            <span class="btn-label">Reiniciar Scripture</span>
         </button>
     </div>
 </div>
@@ -90,7 +91,8 @@
         </div>
         <div class="modal-footer">
             <button class="btn-clear" id="btn-clear">
-                <span class="btn-icon">✕</span> Vaciar Espacio
+                <span class="btn-icon">✕</span>
+                <span class="btn-label">Vaciar Espacio</span>
             </button>
             <button class="btn-cancel" id="btn-cancel">Cancelar</button>
         </div>
@@ -99,6 +101,99 @@
 
 <!-- ═══ TOAST ═══ -->
 <div class="toast" id="toast"></div>
+
+<!-- ═══ TEMPLATES ═══ -->
+<template id="rune-option-template">
+    <div class="rune-option" data-rune="">
+        <div class="rune-option-icon rune-card-icon"></div>
+        <div class="rune-option-info">
+            <div class="rune-option-name"></div>
+            <div class="rune-option-subtitle"></div>
+            <div class="rune-option-desc"></div>
+        </div>
+        <div class="rune-option-arrow">→</div>
+    </div>
+</template>
+
+<template id="rune-card-template">
+    <div class="rune-card">
+        <div class="rune-card-header">
+            <div class="rune-card-icon"></div>
+            <div class="rune-card-title-group">
+                <div class="rune-card-name"></div>
+                <div class="rune-card-subtitle"></div>
+            </div>
+        </div>
+        <div class="effect-list">
+            <div class="effect-item base">
+                <span class="effect-icon">✦</span>
+                <div class="effect-text"></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="effect-item-template">
+    <div class="effect-item">
+        <span class="effect-icon"></span>
+        <div class="effect-text"></div>
+    </div>
+</template>
+
+<template id="stat-badge-template">
+    <div class="stat-badge">
+        <span class="stat-label"></span>
+        <span class="stat-value"></span>
+    </div>
+</template>
+
+<template id="inscribed-runes-bar">
+    <div class="inscribed-runes-bar">
+        <span class="inscribed-runes-list"></span>
+    </div>
+</template>
+
+<template id="synergy-table-template">
+    <table class="synergy-table">
+        <thead><tr>
+            <th></th>
+            <th class="rune-header" data-col="varinor">Varinor</th>
+            <th class="rune-header" data-col="alaithi">Alaithi</th>
+            <th class="rune-header" data-col="ydriliqi">Ydriliqi</th>
+            <th class="rune-header" data-col="oreali">Oreali</th>
+        </tr></thead>
+        <tbody>
+            <tr data-row="varinor">
+                <td class="row-header">Varinor</td>
+                <td><div class="synergy-cell diagonal">—</div></td>
+                <td><div class="synergy-cell" data-cell="varinor_alaithi"></div></td>
+                <td><div class="synergy-cell" data-cell="varinor_ydriliqi"></div></td>
+                <td><div class="synergy-cell" data-cell="varinor_oreali"></div></td>
+            </tr>
+            <tr data-row="alaithi">
+                <td class="row-header">Alaithi</td>
+                <td><div class="synergy-cell" data-cell="alaithi_varinor"></div></td>
+                <td><div class="synergy-cell diagonal">—</div></td>
+                <td><div class="synergy-cell" data-cell="alaithi_ydriliqi"></div></td>
+                <td><div class="synergy-cell" data-cell="alaithi_oreali"></div></td>
+            </tr>
+            <tr data-row="ydriliqi">
+                <td class="row-header">Ydriliqi</td>
+                <td><div class="synergy-cell" data-cell="ydriliqi_varinor"></div></td>
+                <td><div class="synergy-cell" data-cell="ydriliqi_alaithi"></div></td>
+                <td><div class="synergy-cell diagonal">—</div></td>
+                <td><div class="synergy-cell" data-cell="ydriliqi_oreali"></div></td>
+            </tr>
+            <tr data-row="oreali">
+                <td class="row-header">Oreali</td>
+                <td><div class="synergy-cell" data-cell="oreali_varinor"></div></td>
+                <td><div class="synergy-cell" data-cell="oreali_alaithi"></div></td>
+                <td><div class="synergy-cell" data-cell="oreali_ydriliqi"></div></td>
+                <td><div class="synergy-cell diagonal">—</div></td>
+            </tr>
+        </tbody>
+    </table>
+</template>
 
 <script src="app.js"></script>
 </body>
