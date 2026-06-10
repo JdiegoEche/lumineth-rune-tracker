@@ -462,7 +462,7 @@ function calculateEffects() {
         const runeEffects = {
             rune: rune,
             instances: count,
-            totalUnits: rune.perInstance ? count * rune.unitsPerInstance : null,
+            totalUnits: rune.perInstance ? rune.unitsPerInstance : null,
             enhancedEffects: rune.enhanced.map(ee => ({
                 ...ee,
                 active: uniqueRunes.has(ee.requiredRune)
@@ -541,12 +541,8 @@ function renderEffects() {
         card.className = 'rune-card';
         card.dataset.rune = rune.id;
 
-        const instanceBadge = instances > 1
-            ? `<span class="rune-card-instances">×${instances}</span>`
-            : '';
-
-        const unitsInfo = totalUnits !== null
-            ? `<div class="effect-units">▸ ${t('targets')} ${totalUnits} ${t('units')}</div>`
+        const unitsInfo = rune.perInstance
+            ? `<div class="effect-units">▸ ${t('targets')} 2 ${t('units')}</div>`
             : '';
 
         let enhancedHTML = '';
@@ -594,7 +590,6 @@ function renderEffects() {
                     <div class="rune-card-name">${rune.name}</div>
                     <div class="rune-card-subtitle">${tSub(rune.id)}</div>
                 </div>
-                ${instanceBadge}
             </div>
             <div class="effect-list">
                 <div class="effect-item base">
