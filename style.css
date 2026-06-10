@@ -1134,6 +1134,26 @@ body::before {
         padding: 1rem;
     }
 
+    .synergy-table {
+        min-width: 0;
+        font-size: 0.7rem;
+    }
+
+    .synergy-table th {
+        font-size: 0.65rem;
+        padding: 0.4rem 0.3rem;
+    }
+
+    .synergy-table td {
+        padding: 0.35rem;
+    }
+
+    .synergy-cell {
+        font-size: 0.65rem;
+        padding: 0.35rem;
+        min-height: 34px;
+    }
+
     .modal {
         max-width: 100%;
     }
@@ -1165,7 +1185,133 @@ body::before {
         font-size: 0.62rem;
     }
 
+    .diamond-rune-name {
+        font-size: 0.58rem;
+    }
+
     .title {
         font-size: 1.8rem;
+    }
+
+    .rune-card {
+        padding: 0.9rem;
+    }
+
+    .stat-badge {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --diamond-size: 52px;
+        --diamond-size-teclis: 60px;
+    }
+
+    .rounds-row {
+        gap: 0.5rem;
+    }
+
+    .diamond {
+        border-radius: 4px;
+    }
+
+    .diamond-symbol {
+        font-size: 1rem;
+    }
+
+    .diamond-empty-icon {
+        font-size: 1rem;
+    }
+
+    .diamond-label {
+        font-size: 0.55rem;
+    }
+
+    .diamond-rune-name {
+        font-size: 0.5rem;
+        min-height: 0.7rem;
+    }
+
+    .diamond-slot {
+        gap: 0.5rem;
+    }
+
+    .synergy-table {
+        min-width: 0;
+        font-size: 0.65rem;
+    }
+
+    .synergy-table th {
+        font-size: 0.6rem;
+        padding: 0.3rem 0.2rem;
+    }
+
+    .synergy-table td {
+        padding: 0.25rem;
+    }
+
+    .synergy-table td.row-header {
+        padding-right: 0.3rem;
+        font-size: 0.6rem;
+    }
+
+    .synergy-cell {
+        font-size: 0.55rem;
+        padding: 0.25rem;
+        min-height: 28px;
+    }
+
+    .rune-card {
+        padding: 0.75rem;
+    }
+
+    .rune-card-header {
+        gap: 0.5rem;
+    }
+
+    .rune-card-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .rune-card-name {
+        font-size: 0.85rem;
+    }
+
+    .effect-item {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.5rem;
+    }
+
+    .stat-badge {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .rune-option {
+        padding: 0.6rem 0.8rem;
+        gap: 0.6rem;
+    }
+
+    .rune-option-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
+    }
+
+    .rune-option-name {
+        font-size: 0.8rem;
+    }
+
+    .rune-option-subtitle,
+    .rune-option-desc {
+        font-size: 0.65rem;
+    }
+
+    .scripture-hint {
+        font-size: 0.7rem;
     }
 }

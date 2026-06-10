@@ -28,6 +28,7 @@ const LANG = {
         inscribed: 'inscrita en la scripture',
         slotCleared: 'Espacio vaciado',
         scriptureReset: 'Scripture reiniciada',
+        lastRuneLabel: 'última runa inscrita',
         emptyTitle: 'Tu Battle Scripture está vacía',
         emptySub: 'Selecciona una runa en los diamantes de arriba para comenzar',
         runeSubtitles: {
@@ -43,6 +44,11 @@ const LANG = {
             ydriliqi: '-2 a tiradas de carga de enemigos a 12" de los objetivos.',
             oreali: '-1 a tiradas de impacto de enemigos en combate con los objetivos.',
             thalari: '+2 a tiradas de lanzamiento para unidades LUMINETH REALM-LORDS amigas.'
+        },
+        conditionalEffects: {
+            thalari: [
+                '4+ runas únicas: +4" al Movimiento de unidades LUMINETH amigas y sus ataques impactan críticamente en 5+ sin modificar.'
+            ]
         },
         enhancedEffects: {
             varinor: [
@@ -61,9 +67,7 @@ const LANG = {
                 '+4" al Movimiento de los objetivos.',
                 '+5 a la puntuación de control de los objetivos.'
             ],
-            thalari: [
-                '+4" al Movimiento de unidades LUMINETH amigas y los ataques impactan críticamente en tiradas de 5+ sin modificar.'
-            ]
+            thalari: []
         }
     },
     en: {
@@ -89,6 +93,7 @@ const LANG = {
         inscribed: 'inscribed on the scripture',
         slotCleared: 'Slot cleared',
         scriptureReset: 'Scripture reset',
+        lastRuneLabel: 'last rune inscribed',
         emptyTitle: 'Your Battle Scripture is empty',
         emptySub: 'Select a rune in the diamonds above to begin',
         runeSubtitles: {
@@ -104,6 +109,11 @@ const LANG = {
             ydriliqi: '-2 to charge rolls for enemy units within 12" of the targets.',
             oreali: '-1 to hit rolls for attacks made by enemy units in combat with the targets.',
             thalari: '+2 to casting rolls for friendly LUMINETH REALM-LORDS units.'
+        },
+        conditionalEffects: {
+            thalari: [
+                '4+ unique runes: +4" to the Move characteristic of friendly LUMINETH units and their attacks score critical hits on unmodified hit rolls of 5+.'
+            ]
         },
         enhancedEffects: {
             varinor: [
@@ -122,9 +132,7 @@ const LANG = {
                 '+4" to each target\'s Move characteristic.',
                 '+5 to each target\'s control score.'
             ],
-            thalari: [
-                '+4" to the Move characteristic of friendly LUMINETH units and attacks score critical hits on unmodified hit rolls of 5+.'
-            ]
+            thalari: []
         }
     }
 };
@@ -185,8 +193,9 @@ const RUNES = {
         symbol: 'T',
         color: '#ce93d8',
         perInstance: false,
-        enhanced: [
-            { requiredRune: '_4unique', textIndex: 0 }
+        enhanced: [],
+        conditionals: [
+            { requiredUnique: 4, textIndex: 0 }
         ]
     }
 };
@@ -198,7 +207,8 @@ let state = {
     slots: [null, null, null, null, null],
     teclis: null,
     selectedSlotIndex: null,
-    lang: 'es'
+    lang: 'es',
+    activeRuneId: null
 };
 
 // ── Translation helper ──
@@ -216,6 +226,10 @@ function tBase(runeId) {
 
 function tEnhanced(runeId, index) {
     return LANG[state.lang].enhancedEffects[runeId][index];
+}
+
+function tConditional(runeId, index) {
+    return LANG[state.lang].conditionalEffects[runeId][index];
 }
 
 // ── DOM References ──
@@ -387,6 +401,7 @@ function selectRune(runeId) {
     closeModal();
     renderDiamonds();
     renderSynergyMatrix();
+    state.activeRuneId = runeId;
     renderEffects();
 
     const rune = RUNES[runeId];
@@ -404,6 +419,7 @@ function clearSlot() {
     closeModal();
     renderDiamonds();
     renderSynergyMatrix();
+    state.activeRuneId = null;
     renderEffects();
     showToast(t('slotCleared'));
 }
@@ -411,6 +427,7 @@ function clearSlot() {
 function resetAll() {
     state.slots = [null, null, null, null, null];
     state.teclis = null;
+    state.activeRuneId = null;
     renderDiamonds();
     renderSynergyMatrix();
     renderEffects();
@@ -446,15 +463,14 @@ function calculateEffects() {
             rune: rune,
             instances: count,
             totalUnits: rune.perInstance ? count * rune.unitsPerInstance : null,
-            enhancedEffects: rune.enhanced.map(ee => {
-                let active = false;
-                if (ee.requiredRune === '_4unique') {
-                    active = uniqueRunes.size >= 4;
-                } else {
-                    active = uniqueRunes.has(ee.requiredRune);
-                }
-                return { ...ee, active };
-            })
+            enhancedEffects: rune.enhanced.map(ee => ({
+                ...ee,
+                active: uniqueRunes.has(ee.requiredRune)
+            })),
+            conditionalEffects: (rune.conditionals || []).map(ce => ({
+                ...ce,
+                active: uniqueRunes.size >= ce.requiredUnique
+            }))
         };
         effects.push(runeEffects);
     }
@@ -470,19 +486,7 @@ function renderEffects() {
     const { effects, uniqueCount, totalRunes } = calculateEffects();
     const uniqueRunes = getUniqueRunes();
 
-    // Empty state
-    if (effects.length === 0) {
-        emptyState.classList.remove('hidden');
-        emptyState.querySelector('p:first-of-type').textContent = t('emptyTitle');
-        emptyState.querySelector('.empty-sub').textContent = t('emptySub');
-        effectsGrid.innerHTML = '';
-        effectsStats.innerHTML = '';
-        return;
-    }
-
-    emptyState.classList.add('hidden');
-
-    // Stats badges
+    // Stats badges (always show)
     let statsHTML = `
         <div class="stat-badge">
             <span>${t('uniqueRunes')}:</span>
@@ -505,12 +509,34 @@ function renderEffects() {
 
     effectsStats.innerHTML = statsHTML;
 
+    // Empty state
+    if (effects.length === 0) {
+        emptyState.classList.remove('hidden');
+        emptyState.querySelector('p:first-of-type').textContent = t('emptyTitle');
+        emptyState.querySelector('.empty-sub').textContent = t('emptySub');
+        effectsGrid.innerHTML = '';
+        return;
+    }
+
+    emptyState.classList.add('hidden');
+
     // Sort cards in canonical order
     const order = ['varinor', 'alaithi', 'ydriliqi', 'oreali', 'thalari'];
     effects.sort((a, b) => order.indexOf(a.rune.id) - order.indexOf(b.rune.id));
 
-    effectsGrid.innerHTML = '';
-    effects.forEach(({ rune, instances, totalUnits, enhancedEffects }) => {
+    // Inscribed runes line
+    const depicted = getDepictedRunes();
+    let headerHTML = '';
+    if (depicted.length > 0) {
+        const runeLine = depicted.map(id => {
+            const r = RUNES[id];
+            return `<span style="color:${r.color};font-weight:600">${r.symbol} ${r.name}</span>`;
+        }).join(' · ');
+        headerHTML = `<div style="font-size:0.8rem;color:var(--text-secondary);padding:0.5rem 0.75rem;margin-bottom:0.75rem;background:var(--bg-card);border-radius:8px;border:1px solid rgba(212,168,67,0.1)">${runeLine}</div>`;
+    }
+
+    effectsGrid.innerHTML = headerHTML;
+    effects.forEach(({ rune, instances, totalUnits, enhancedEffects, conditionalEffects }) => {
         const card = document.createElement('div');
         card.className = 'rune-card';
         card.dataset.rune = rune.id;
@@ -529,17 +555,10 @@ function renderEffects() {
             const statusClass = isActive ? 'enhanced-active' : 'enhanced-locked';
             const icon = isActive ? '⚡' : '🔒';
 
-            let requirement = '';
-            if (ee.requiredRune === '_4unique') {
-                requirement = isActive
-                    ? `<div class="effect-requirement">✓ 4+ ${t('uniqueRunesReq')} (${uniqueRunes.size} ${t('active')})</div>`
-                    : `<div class="effect-requirement">${t('requires')} 4+ ${t('uniqueRunesReq')} (${uniqueRunes.size}/4)</div>`;
-            } else {
-                const reqRune = RUNES[ee.requiredRune];
-                requirement = isActive
-                    ? `<div class="effect-requirement">✓ ${t('synergyWith')} ${reqRune.name}</div>`
-                    : `<div class="effect-requirement">${t('requires')} ${reqRune.name} (${tSub(ee.requiredRune)})</div>`;
-            }
+            const reqRune = RUNES[ee.requiredRune];
+            const requirement = isActive
+                ? `<div class="effect-requirement">✓ ${t('synergyWith')} ${reqRune.name}</div>`
+                : `<div class="effect-requirement">${t('requires')} ${reqRune.name} (${tSub(ee.requiredRune)})</div>`;
 
             enhancedHTML += `
                 <div class="effect-item ${statusClass}">
@@ -547,6 +566,22 @@ function renderEffects() {
                     <div class="effect-text">
                         ${tEnhanced(rune.id, ee.textIndex)}
                         ${requirement}
+                    </div>
+                </div>
+            `;
+        });
+
+        let conditionalHTML = '';
+        conditionalEffects.forEach(ce => {
+            const isActive = ce.active;
+            const statusClass = isActive ? 'enhanced-active' : 'enhanced-locked';
+            const icon = isActive ? '★' : '☆';
+
+            conditionalHTML += `
+                <div class="effect-item ${statusClass}">
+                    <span class="effect-icon">${icon}</span>
+                    <div class="effect-text">
+                        ${tConditional(rune.id, ce.textIndex)}
                     </div>
                 </div>
             `;
@@ -569,6 +604,7 @@ function renderEffects() {
                         ${unitsInfo}
                     </div>
                 </div>
+                ${conditionalHTML}
                 ${enhancedHTML}
             </div>
         `;
@@ -586,9 +622,7 @@ function renderSynergyMatrix() {
     RUNE_IDS.forEach(runeId => {
         synergies[runeId] = {};
         RUNES[runeId].enhanced.forEach(ee => {
-            if (ee.requiredRune !== '_4unique') {
-                synergies[runeId][ee.requiredRune] = ee.textIndex;
-            }
+            synergies[runeId][ee.requiredRune] = ee.textIndex;
         });
     });
 
